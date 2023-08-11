@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(MaterialApp(
     home: HomePage(),
+    theme: ThemeData(primarySwatch: Colors.purple),
     debugShowCheckedModeBanner: false,
   ));
 }
 
 PageController pageController = PageController();
 int pageNow = 0;
+int contador = 0;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -79,11 +81,49 @@ class _HomePageState extends State<HomePage> {
         //     )
         //   ],
         // ),
+        drawer: Drawer(
+            child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text('Thiago Costa'),
+              accountEmail: Text('thiagorcosta.26@gmail.com'),
+              currentAccountPicture: CircleAvatar(
+                child: Text('TC'),
+              ),
+            ),
+            ListTile(
+              title: Text('Minha Conta'),
+              subtitle: Text('Informações da conta'),
+              trailing: Icon(Icons.money),
+              leading: Icon(Icons.money_off),
+              onLongPress: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Item 2'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Item 3'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        )),
         body: PageView(
           controller: pageController,
           children: [
-            Container(
-              color: Colors.green,
+            Center(
+              child: Container(
+                child: Text(
+                  contador.toString(),
+                  style: TextStyle(fontSize: 82),
+                ),
+              ),
             ),
             Container(
               color: Colors.blue,
@@ -94,27 +134,49 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: pageNow,
-          onTap: (page) {
-            pageController.animateToPage(page,
-                duration: Duration(milliseconds: 200), curve: Curves.linear);
-            setState(() {
-            pageNow = page; //altera para verificar qual a página atual nos icones              
-            });
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.home),
-                label: 'Início',
-                backgroundColor: Colors.red),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.favorite),
-                label: 'Favoritos',
-                backgroundColor: Colors.blue),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.search),
-                label: 'Pesquisar',
-                backgroundColor: Colors.green),
+            currentIndex: pageNow,
+            onTap: (page) {
+              pageController.animateToPage(page,
+                  duration: Duration(milliseconds: 200), curve: Curves.linear);
+              setState(() {
+                pageNow =
+                    page; //altera para verificar qual a página atual nos icones
+              });
+            },
+            items: [
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.home),
+                  label: 'Início',
+                  backgroundColor: Colors.red),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.favorite),
+                  label: 'Favoritos',
+                  backgroundColor: Colors.blue),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.search),
+                  label: 'Pesquisar',
+                  backgroundColor: Colors.green),
+            ]),
+        floatingActionButton: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+                onPressed: () {
+                  if (contador > 0)
+                    setState(() {
+                      contador--;
+                    });
+                },
+                child: Icon(Icons.remove)),
+            SizedBox(width: 14),
+            FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  contador++;
+                });
+              },
+              child: Icon(Icons.add),
+            )
           ],
         ));
   }
