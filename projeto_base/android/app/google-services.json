@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "30592375834",
+    "project_id": "crudads",
+    "storage_bucket": "crudads.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:30592375834:android:61762743b7afcdbee6c5a3",
+        "android_client_info": {
+          "package_name": "com.example.olxprojeto"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQ2sBvmWM7UrvzkZ1f9yE5zGdHYEK7EWk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

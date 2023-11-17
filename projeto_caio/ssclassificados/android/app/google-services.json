@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "1779176318",
+    "firebase_url": "https://crud-ads-ae1e5-default-rtdb.firebaseio.com",
+    "project_id": "crud-ads-ae1e5",
+    "storage_bucket": "crud-ads-ae1e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1779176318:android:1dff2dd7356a8b3ee8992f",
+        "android_client_info": {
+          "package_name": "com.example.ssclassificados"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5rtPESa5NTZ0Px409BPW7veSI5t1MSQQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
