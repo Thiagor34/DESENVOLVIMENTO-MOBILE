@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
+
 class Create extends StatefulWidget {
   const Create({Key? key}) : super(key: key);
 
@@ -11,6 +12,7 @@ class Create extends StatefulWidget {
 }
 
 class _CreateAdState extends State<Create> {
+  
   var image = null;
   TextEditingController nameController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -27,6 +29,9 @@ class _CreateAdState extends State<Create> {
     super.initState();
     _loadCategories();
     _loadUserLancamentos();
+        valueController.addListener(() {
+      formatCurrency();
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -43,6 +48,25 @@ class _CreateAdState extends State<Create> {
       });
   }
 
+    void formatCurrency() {
+    String text = valueController.text;
+    if (text.isNotEmpty) {
+      text = text.replaceAll(RegExp(r'[^0-9]'), '');
+
+      double value = double.parse(text) / 100;
+
+      String formattedValue = NumberFormat.currency(
+        locale: 'pt_BR',
+        symbol: 'R\$',
+      ).format(value);
+
+      valueController.value = valueController.value.copyWith(
+        text: formattedValue,
+        selection: TextSelection.collapsed(offset: formattedValue.length),
+      );
+    }
+  }
+
   createLancamento() async {
     String userUID = FirebaseAuth.instance.currentUser!.uid;
     if (nameController.text.isEmpty ||
@@ -57,12 +81,15 @@ class _CreateAdState extends State<Create> {
       );
       return;
     }
+
+    double valor = double.parse(valueController.text.replaceAll(RegExp(r'[^0-9]'), '')) / 100;
+
     await FirebaseFirestore.instance.collection('Lancamentos').add({
       'UID': userUID,
       'Nome': nameController.text,
       'Categoria': categoryController.text,
       'Descricao': descController.text,
-      'Valor': double.parse(valueController.text),
+      'Valor': valor,
       'Tipo': selectedType,
       'Pagamento': selectedPag,
       'Data': selectedDate,
@@ -99,7 +126,7 @@ class _CreateAdState extends State<Create> {
           title: Text("Escolha uma Categoria"),
           content: Container(
             height: 200,
-            width: double.maxFinite, // Adicione isso para ocupar toda a largura
+            width: double.maxFinite,
             child: ListView(
               shrinkWrap: true,
               children: categories.map((category) {
@@ -171,7 +198,7 @@ class _CreateAdState extends State<Create> {
     );
   }
 
-   void _loadUserLancamentos() async {
+  void _loadUserLancamentos() async {
     String userUID = FirebaseAuth.instance.currentUser!.uid;
 
     try {
@@ -183,7 +210,6 @@ class _CreateAdState extends State<Create> {
 
       if (mounted) {
         setState(() {
-          // Filtrar e armazenar apenas os lançamentos associados ao usuário autenticado
           lancamentos = snapshot.docs
               .map((doc) => doc.data() as Map<String, dynamic>)
               .toList();
@@ -193,7 +219,6 @@ class _CreateAdState extends State<Create> {
       print('Erro ao buscar lançamentos: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -408,8 +433,13 @@ class _CreateAdState extends State<Create> {
 
   void _loadCategories() async {
     try {
+      String userUID = FirebaseAuth.instance.currentUser!.uid;
+
       final QuerySnapshot<Map<String, dynamic>> snapshot =
-          await FirebaseFirestore.instance.collection('Categorias').get();
+          await FirebaseFirestore.instance
+              .collection('Categorias')
+              .where('userUID', isEqualTo: userUID)
+              .get();
 
       if (mounted) {
         setState(() {
@@ -429,9 +459,13 @@ class _CreateAdState extends State<Create> {
   }
 
   void _saveNewCategory(String newCategory) async {
-    await FirebaseFirestore.instance
-        .collection('Categorias')
-        .add({'Nome': newCategory});
+    String userUID = FirebaseAuth.instance.currentUser!.uid;
+
+    await FirebaseFirestore.instance.collection('Categorias').add({
+      'Nome': newCategory,
+      'userUID': userUID,
+    });
+
     _loadCategories();
   }
 }

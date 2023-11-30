@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:olxprojeto/pages/AnuncioPage.dart';
 import 'package:olxprojeto/pages/Create.dart';
 import 'package:olxprojeto/pages/LoginPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:olxprojeto/pages/Graficos.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -35,20 +36,42 @@ class _HomePageState extends State<HomePage> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             UserAccountsDrawerHeader(
-              accountName: Text("Nome do Cliente"),
-              accountEmail: Text("cliente@email.com"),
+              accountName: Text(
+                  FirebaseAuth.instance.currentUser!.email?.split('@')[0] ??
+                      "Nome do Cliente"),
+              accountEmail: Text(FirebaseAuth.instance.currentUser!.email ??
+                  "cliente@email.com"),
               currentAccountPicture: CircleAvatar(),
             ),
             ListTile(
-              title: Text("Meus Dados"),
-              onTap: () {},
+              title: Text("Início"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              },
             ),
             ListTile(
-              title: Text("Meus Anúncios"),
-              onTap: () {},
+              title: Text("Lançamentos"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Create()),
+                );
+              },
             ),
             ListTile(
-              title: Text("Sair do App"),
+              title: Text("Gráficos"),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Graficos()),
+                );
+              },
+            ),
+            ListTile(
+              title: Text("Sair"),
               onTap: () {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -89,15 +112,12 @@ class _HomePageState extends State<HomePage> {
 
                 var lancamentos = snapshot.data!.docs;
 
-                // Inicializa o saldo
                 double saldo = 0;
 
-                // Itera sobre os documentos da coleção
                 lancamentos.forEach((lancamento) {
                   var dadosLancamento =
                       lancamento.data() as Map<String, dynamic>;
 
-                  // Verifica o tipo do lançamento e atualiza o saldo
                   if (dadosLancamento['Tipo'] == 'Débito') {
                     saldo -= dadosLancamento['Valor'] ?? 0;
                   } else {
@@ -178,7 +198,6 @@ class _HomePageState extends State<HomePage> {
                     return GestureDetector(
                       child: Card(
                         child: ListTile(
-                          // Adicione aqui a lógica para exibir a imagem do lancamento,
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -218,7 +237,6 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onTap: () {
-                        // Adicione aqui a lógica de navegação quando um item for tocado
                       },
                     );
                   },
@@ -262,7 +280,10 @@ class _HomePageState extends State<HomePage> {
               iconSize: 35,
               color: Colors.white,
               onPressed: () {
-                // Navegar para a tela de gráficos
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Graficos()),
+                );
               },
             ),
           ],
